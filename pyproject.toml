@@ -1,7 +1,7 @@
 [project]
 name = "baseProjectTemplate"
 version = "0.1.0"
-description = "a discord bot w/ economy && games featuring flowers. with <3 by yxzhin ^^"
+description = "base fastapi && pycord project template. with <3 by yxzhin ^^"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

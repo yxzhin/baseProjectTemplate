@@ -14,6 +14,12 @@ authors:
 repository-code: 'https://github.com/yxzhin/baseProjectTemplate'
 url: 'https://cirf.hhos.net'
 abstract: >-
-  a discord bot w/ economy && games featuring flowers. with
-  <3 by yxzhin ^^
+  base fastapi && pycord project template. with <3 by yxzhin
+  ^^
+keywords:
+  - fastapi
+  - pycord
+  - template
 license: GPL-3.0
+version: v0.1.0
+date-released: '2026-02-22'
