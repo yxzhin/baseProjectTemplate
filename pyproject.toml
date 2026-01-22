@@ -1,0 +1,80 @@
+[project]
+name = "baseProjectTemplate"
+version = "0.1.0"
+description = "a discord bot w/ economy && games featuring flowers. with <3 by yxzhin ^^"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "alembic>=1.18.1",
+    "asyncpg>=0.31.0",
+    "fastapi[standard-no-fastapi-cloud-cli]>=0.128.0",
+    "loguru>=0.7.3",
+    "psycopg2>=2.9.11",
+    "py-cord[speed]>=2.7.0",
+    "redis>=7.1.0",
+    "sqlalchemy>=2.0.45",
+    "uvicorn>=0.40.0",
+]
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+]
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py313"
+exclude = [
+    "src/frontend",
+    "*/alembic/*"
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+unfixable = []
+select = [
+    "E",  # pycodestyle (errors)
+    "F",  # pyflakes
+    "I",  # isort
+    "N",  # pep8-naming
+    "UP", # pyupgrade (современный синтаксис)
+    "B",  # flake8-bugbear (дополнительные проверки)
+    "C4", # flake8-comprehensions
+    "A",  # flake8-builtins (не переопределять встроенные имена)
+]
+ignore = [
+    "E501",
+    "ANN401",
+    "F403", "F405",
+    "B008"
+]
+
+[tool.mypy]
+python_version = "3.13"
+strict = false
+warn_unused_configs = true
+warn_return_any = true
+warn_unused_ignores = false
+disallow_untyped_defs = true
+disallow_untyped_decorators = false
+ignore_missing_imports = true
+disallow_subclassing_any = false
+explicit_package_bases = true
+exclude = [
+    "alembic"
+]
+
+[tool.pytest.ini_options]
+addopts = "-v" #  --cov=src/server --cov=src/bot --cov-report=html
+testpaths = [
+    "src/server/tests",
+    "src/bot/tests",
+]

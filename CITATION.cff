@@ -1,0 +1,19 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: baseProjectTemplate
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: yxzhin
+    email: yxzhin@gmail.com
+    affiliation: cirhalfstudio
+repository-code: 'https://github.com/yxzhin/baseProjectTemplate'
+url: 'https://cirf.hhos.net'
+abstract: >-
+  a discord bot w/ economy && games featuring flowers. with
+  <3 by yxzhin ^^
+license: GPL-3.0

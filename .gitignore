@@ -1,0 +1,16 @@
+.tmp
+.venv
+.env
+build
+dist
+.vscode/*
+!.vscode/settings.json
+__pycache__
+app.egg-info
+*.pyc
+.mypy_cache
+.ruff_cache
+.pytest_cache
+.coverage
+htmlcov
+#*.code-workspace

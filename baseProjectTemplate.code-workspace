@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"ruff.enable": true,
+		"ruff.lint.enable": true
+	}
+}
