@@ -2,7 +2,7 @@ from pathlib import Path
 
 
 class ConfigLoader:
-    BASE_PATH = Path(__file__).resolve().parent.parent.parent.parent
+    BASE_PATH = Path(__file__).resolve().parent.parent.parent
 
     @staticmethod
     def import_env() -> None:
