@@ -28,7 +28,12 @@ class TheBot(Bot):
 
     async def interaction_check(self, interaction: Interaction) -> bool:
         StructuredLogger.info(
-            f"[bot] {interaction.user} issued command: {interaction.command.name} {interaction.command.extras} ({interaction.user.id}, {interaction.guild.id})"  # type: ignore
+            "[bot] issued command",
+            user=str(interaction.user),  # type: ignore
+            command_name=interaction.command.name,  # type: ignore
+            command_extras=interaction.command.extras,  # type: ignore
+            user_id=interaction.user.id,  # type: ignore
+            guild_id=interaction.guild.id,  # type: ignore
         )
         return True
 

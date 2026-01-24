@@ -1,3 +1,5 @@
+from time import time
+
 from discord import Interaction, app_commands
 from discord.ext.commands import Bot, Cog
 
@@ -10,9 +12,14 @@ class ApiTest(Cog):
 
     @app_commands.command(name="api_test", description="test the fastapi app")
     async def api_test(self, interaction: Interaction):
+        start_time = time()
         async with APIClient() as api_client:
             result = await api_client.get("/test")
-        await interaction.response.send_message(f"`{result}`")
+        end_time = time()
+        api_latency = end_time - start_time
+        await interaction.response.send_message(
+            f"`{result}`\n`latency: ~{api_latency}s`"
+        )
 
 
 async def setup(bot: Bot):

@@ -47,7 +47,17 @@ class APIClient:
                 result = await resp.text()
                 return result
             finally:
-                StructuredLogger.info(f"[api] {method} {url} - {resp.status} {result}")
+                StructuredLogger.info(
+                    "[api]",
+                    method=method,
+                    url=url,
+                    status=resp.status,
+                    result=result,
+                    params=params,
+                    json=json,
+                    data=data,
+                    headers=headers,
+                )
 
     async def get(self, path: str, **kwargs):
         return await self._request("GET", path, **kwargs)
