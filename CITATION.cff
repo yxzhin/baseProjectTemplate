@@ -14,8 +14,8 @@ authors:
 repository-code: 'https://github.com/yxzhin/baseProjectTemplate'
 url: 'https://cirf.hhos.net'
 abstract: >-
-  base fastapi && pycord project template. with <3 by yxzhin
-  ^^
+  base fastapi && discord.py project template. with <3 by
+  yxzhin ^^
 keywords:
   - fastapi
   - pycord

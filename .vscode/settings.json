@@ -15,7 +15,7 @@
         "editor.suggest.insertMode": "replace",
         "editor.defaultFormatter": "EditorConfig.EditorConfig",
     },
-    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.typeCheckingMode": "basic",
     "markdown.validate.enabled": true,
     "ruff.enable": true,
     "ruff.lint.enable": true,

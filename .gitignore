@@ -14,3 +14,4 @@ app.egg-info
 .coverage
 htmlcov
 #*.code-workspace
+typings
