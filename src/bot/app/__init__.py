@@ -7,12 +7,12 @@ from discord.ext.commands import Bot
 
 from ...shared import StructuredLogger
 from .conf import Config
-from .utils import get_extension_path
+from .utils import Helpers
 
 
 class TheBot(Bot):
     def __init__(self):
-        intents = Intents.all()
+        intents = Intents.default()
         intents.message_content = True
 
         super().__init__(
@@ -53,7 +53,7 @@ class TheBot(Bot):
 
         for file in listdir(abs_cogs_path):
             if file[:-3] in Config.BOT_COGS:
-                cog_path = get_extension_path(abs_cogs_path, file)
+                cog_path = Helpers.get_extension_path(abs_cogs_path, file)
                 try:
                     if reload_:
                         await self.reload_extension(cog_path)

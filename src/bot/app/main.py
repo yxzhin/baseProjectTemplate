@@ -11,7 +11,7 @@ def main() -> None:
     async def on_ready():
         StructuredLogger.info(f"[bot] started as {bot.user}")
 
-    bot.run(str(Config.BOT_TOKEN))
+    bot.run(Config.BOT_TOKEN)
 
 
 if __name__ == "__main__":

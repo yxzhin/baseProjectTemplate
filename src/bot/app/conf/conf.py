@@ -11,6 +11,6 @@ class Config:
     BOT_CLIENT_ID = int(os.getenv("BOT_CLIENT_ID"))  # type: ignore
     BOT_OWNER_ID = int(os.getenv("BOT_OWNER_ID"))  # type: ignore
     BOT_STATUS_MESSAGE = str(os.getenv("BOT_STATUS_MESSAGE"))
-    BOT_COGS = str(os.getenv("BOT_COGS")).replace(" ", "").split(",")
+    BOT_COGS = str(os.getenv("BOT_COGS")).strip().split(",")
 
     API_URL = str(os.getenv("API_URL"))

@@ -7,7 +7,7 @@ from discord.ext.commands import Cog, is_owner
 
 from ....shared import StructuredLogger
 from .. import TheBot
-from ..utils import get_extension_path
+from ..utils import Helpers
 
 
 class Reload(Cog):
@@ -21,7 +21,7 @@ class Reload(Cog):
         try:
             abs_cogs_path = dirname(realpath(argv[0])) + "/cogs"
             file = f"{cog}.py"
-            cog_path = get_extension_path(abs_cogs_path, file)
+            cog_path = Helpers.get_extension_path(abs_cogs_path, file)
             await self.bot.reload_extension(cog_path)
             await self.bot.tree.sync(guild=interaction.guild)
             await interaction.response.send_message(

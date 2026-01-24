@@ -10,10 +10,8 @@ class ApiTest(Cog):
 
     @app_commands.command(name="api_test", description="test the fastapi app")
     async def api_test(self, interaction: Interaction):
-        api_client = APIClient()
-        await api_client.start()
-        result = await api_client.get("/test")
-        await api_client.close()
+        async with APIClient() as api_client:
+            result = await api_client.get("/test")
         await interaction.response.send_message(f"`{result}`")
 
 
