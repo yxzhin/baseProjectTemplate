@@ -1,0 +1,10 @@
+{
+  "name": "baseprojecttemplate",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "frontend:dev": "pnpm --filter @baseprojecttemplate/frontend run dev",
+    "frontend:lint": "pnpm --filter @baseprojecttemplate/frontend run lint",
+    "frontend:format": "pnpm --filter @baseprojecttemplate/frontend run format"
+  }
+}

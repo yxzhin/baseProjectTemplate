@@ -1,28 +1,48 @@
 {
-    "files.eol": "\n",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit",
-        "source.fixAll": "always",
+  "files.eol": "\n",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll": "always"
+  },
+  "editor.defaultFormatter": "EditorConfig.EditorConfig",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
     },
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff"
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "[javascript]": {
+    "editor.maxTokenizationLineLength": 2500,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "editor.unicodeHighlight.invisibleCharacters": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
     },
-    "[json]": {
-        "editor.quickSuggestions": {
-            "strings": true
-        },
-        "editor.suggest.insertMode": "replace",
-        "editor.defaultFormatter": "EditorConfig.EditorConfig",
-    },
-    "python.analysis.typeCheckingMode": "basic",
-    "markdown.validate.enabled": true,
-    "ruff.enable": true,
-    "ruff.lint.enable": true,
-    "ruff.format.enable": true,
-    "ruff.configuration": "${workspaceFolder}\\pyproject.toml",
-    "mypy-type-checker.args": [
-        "--config-file",
-        "${workspaceFolder}\\pyproject.toml",
-    ],
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+  },
+  "python.analysis.typeCheckingMode": "basic",
+  "markdown.validate.enabled": true,
+  "ruff.enable": true,
+  "ruff.lint.enable": true,
+  "ruff.format.enable": true,
+  "ruff.configuration": "${workspaceFolder}\\pyproject.toml",
+  "mypy-type-checker.args": [
+    "--config-file",
+    "${workspaceFolder}\\pyproject.toml"
+  ]
 }

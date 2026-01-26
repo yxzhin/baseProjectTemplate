@@ -3,35 +3,34 @@ repos:
     rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
-        exclude: |
-            (?x)^(
-                .vscode/settings.json|
-                src/frontend/.*|
-                alembic/.*
-            )$
       - id: trailing-whitespace
-        exclude: |
-            (?x)^(
-                src/frontend/.*|
-                alembic/.*
-            )$
       - id: check-yaml
       - id: check-toml
       - id: check-added-large-files
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.3
+  - repo: local
     hooks:
       - id: ruff-check
-        args: ["--config", "pyproject.toml", "--fix", "--exit-non-zero-on-fix"]
-      - id: ruff-format
-        args: ["--config", "pyproject.toml"]
+        name: ruff check
+        entry: uv run ruff check --config pyproject.toml --force-exclude --fix --exit-non-zero-on-fix
+        language: system
+        types: [python]
+        exclude: ^alembic/.*
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.1
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format --config pyproject.toml --force-exclude --exit-non-zero-on-format
+        language: system
+        types: [python]
+        exclude: ^alembic/.*
+
+  - repo: local
     hooks:
       - id: mypy
-        args: ["--config-file", "pyproject.toml"]
+        name: mypy
+        entry: uv run mypy --config-file pyproject.toml
+        language: system
+        types: [python]
         exclude: ^alembic/.*
 
   - repo: local
@@ -44,3 +43,19 @@ repos:
         pass_filenames: false
         always_run: false
         verbose: true
+
+  - repo: local
+    hooks:
+      - id: prettier-and-eslint-check
+        name: prettier and eslint check
+        entry: pnpm --filter @baseprojecttemplate/frontend run lint --
+        language: system
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: prettier-format
+        name: prettier format
+        entry: pnpm --filter @baseprojecttemplate/frontend run format --
+        language: system
+        pass_filenames: false
