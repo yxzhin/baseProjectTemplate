@@ -12,3 +12,10 @@ class UserOutResponse(BaseModel):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UsersOutResponse(BaseModel):
+    users: list[UserOutResponse]
+    total: int
+
+    model_config = ConfigDict(from_attributes=True)

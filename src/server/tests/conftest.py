@@ -3,6 +3,7 @@ from collections.abc import AsyncGenerator
 import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import event
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -37,14 +38,26 @@ async def test_engine():
 
 @pytest.fixture(scope="function")
 async def db_session(test_engine) -> AsyncGenerator[AsyncSession]:
-    sessionmaker = async_sessionmaker(
-        test_engine,
-        expire_on_commit=False,
-        class_=AsyncSession,
-    )
+    async with test_engine.connect() as conn:
+        transaction = await conn.begin()
 
-    async with sessionmaker() as session:
-        yield session
+        sessionmaker = async_sessionmaker(
+            bind=conn,
+            expire_on_commit=False,
+            class_=AsyncSession,
+        )
+
+        async with sessionmaker() as session:
+            await session.begin_nested()
+
+            @event.listens_for(session.sync_session, "after_transaction_end")
+            def restart_savepoint(sess, trans):
+                if trans.nested and not trans._parent.nested:
+                    sess.begin_nested()
+
+            yield session
+
+        await transaction.rollback()
 
 
 @pytest.fixture(scope="function")

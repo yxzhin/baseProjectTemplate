@@ -21,13 +21,19 @@ class UserRepository:
         return result.scalar_one_or_none()
 
     @staticmethod
-    async def add_user(session: AsyncSession, user: UserAddInput) -> User:
-        new_user = User(
-            discord_id=user.discord_id,
-            username=user.username,
-            avatar_url=user.avatar_url,
-        )
-        session.add(new_user)
-        await session.commit()
-        await session.refresh(new_user)
-        return new_user
+    def get_users_query():
+        return select(User).order_by(User.id)
+
+    @staticmethod
+    async def add_users(session: AsyncSession, users: list[UserAddInput]) -> list[User]:
+        new_users = []
+        for user in users:
+            new_user = User(
+                discord_id=user.discord_id,
+                username=user.username,
+                avatar_url=user.avatar_url,
+            )
+            new_users.append(new_user)
+        session.add_all(new_users)
+        await session.flush()
+        return new_users

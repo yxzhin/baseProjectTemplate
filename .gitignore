@@ -17,3 +17,4 @@ htmlcov
 #typings
 *.pyi
 node_modules
+test.db

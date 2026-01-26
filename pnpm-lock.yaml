@@ -6,7 +6,9 @@ settings:
 
 importers:
 
-  .:
+  .: {}
+
+  src/frontend:
     devDependencies:
       '@eslint/compat':
         specifier: ^1.4.0
