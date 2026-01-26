@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: baseProjectTemplate_postgres
+    container_name: baseprojecttemplate_postgres
     restart: always
     environment:
       POSTGRES_USER: admin
@@ -14,7 +14,7 @@ services:
 
   redis:
     image: redis:latest
-    container_name: baseProjectTemplate_redis
+    container_name: baseprojecttemplate_redis
     restart: always
     ports:
       - "6379:6379"

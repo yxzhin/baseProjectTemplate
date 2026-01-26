@@ -14,12 +14,14 @@ authors:
 repository-code: 'https://github.com/yxzhin/baseProjectTemplate'
 url: 'https://cirf.hhos.net'
 abstract: >-
-  base fastapi && discord.py project template. with <3 by
-  yxzhin ^^
+  base fastapi, discord.py && svelte project template. with
+  <3 by yxzhin ^^
 keywords:
   - fastapi
   - discord.py
+  - svelte
   - template
+  - yxzhin
 license: GPL-3.0
 version: v0.1.0
-date-released: '2026-02-22'
+date-released: '2026-02-26'

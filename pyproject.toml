@@ -1,7 +1,7 @@
 [project]
 name = "baseProjectTemplate"
 version = "0.1.0"
-description = "base fastapi && discord.py project template. with <3 by yxzhin ^^"
+description = "base fastapi, discord.py && svelte project template. with <3 by yxzhin ^^"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

@@ -1,11 +1,12 @@
 # baseProjectTemplate
 
-base fastapi &amp;&amp; discord.py project template. with &lt;3 by yxzhin ^^
+base fastapi, discord.py &amp;&amp; svelte project template. with &lt;3 by yxzhin ^^
 
 ## requirements
 
 - docker
 - uv
+- pnpm
 
 ## setup
 
@@ -18,8 +19,10 @@ base fastapi &amp;&amp; discord.py project template. with &lt;3 by yxzhin ^^
 ## run
 
 1. run docker compose: `docker compose up -d`
-2. in the first powershell instance, run fastapi server: `scripts\run-server` &amp;&amp; go to `https://localhost:8000/test` to test it
-3. in the second one, run discord.py bot: `scripts\run-bot` &amp;&amp; use commands `/ping` &amp;&amp; `/api_test` to test it
+2. in the first powershell instance, run the server: `scripts\run-server` &amp;&amp; go to `http://localhost:8000/test` to test it
+3. in the second one, run the bot: `scripts\run-bot` &amp;&amp; use commands `/ping` &amp;&amp; `/api_test` to test it
+4. in the third one, run the client: `scripts\run-client` &amp;&amp; go to `http://localhost:5173/test` to test it
+5. it works!! :tada:
 
 ## credits
 
