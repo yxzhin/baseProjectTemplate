@@ -4,9 +4,18 @@ from aiohttp import ClientSession, ClientTimeout, ContentTypeError
 
 from ....shared import StructuredLogger
 from ..conf import Config
+from .base_http_client import BaseHttpClient
 
 
-class APIClient:
+class AiohttpClient(BaseHttpClient):
+    """
+    Асинхронный HTTP-клиент на основе aiohttp.
+    Используется для взаимодействия с внешним API.
+    Реализация HTTP-клиента для Production окружения.
+    Имплементирует общий интерфейс HttpClient.
+    Используется с асинхронным контекстным менеджером.
+    """
+
     def __init__(self, timeout: int = 10):
         self.base_url = Config.API_URL.rstrip("/")
         self.timeout = ClientTimeout(total=timeout)
@@ -71,7 +80,6 @@ class APIClient:
     async def delete(self, path: str, **kwargs):
         return await self._request("DELETE", path, **kwargs)
 
-    # Для использования с async with
     async def __aenter__(self):
         await self.start()
         return self

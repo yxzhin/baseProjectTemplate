@@ -7,6 +7,11 @@ from ...db import Base
 
 
 class User(Base):
+    """
+    Модель пользователя.
+    Представляет пользователя с его Discord ID, именем пользователя и URL аватара.
+    """
+
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)

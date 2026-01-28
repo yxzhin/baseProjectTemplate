@@ -11,6 +11,7 @@ database_router = APIRouter(prefix="/database", tags=["database"])
 async def seed_database(
     session: AsyncSession = Depends(Database.dependency),
 ):
+    """Заполняет базу данных начальными данными с помощью Seeder."""
     if not await Seeder.seed(session=session):
         raise HTTPException(status_code=500, detail="failed to seed the database")
     return {"message": "database seeded successfully!! :tada:"}
@@ -20,5 +21,6 @@ async def seed_database(
 async def clear_database(
     session: AsyncSession = Depends(Database.dependency),
 ):
+    """Очищает базу данных с помощью Seeder."""
     await Seeder.clear(session=session)
     return {"message": "database cleared successfully!! :tada:"}

@@ -17,12 +17,20 @@ start_time_var = contextvars.ContextVar("time_start", default=None)
 
 
 class StructuredLogger:
+    """
+    Структурированный логгер с поддержкой контекста и упрощением объектов.
+    Логирует события в формате JSON с дополнительными полями контекста,
+    такими как trace_id и время с момента старта.
+    """
+
     @staticmethod
     def _get_trace_id() -> str:
+        """Возвращает текущий trace_id или генерирует новый."""
         return trace_id_var.get() or str(uuid.uuid4())
 
     @staticmethod
     def _add_context(kwargs: dict[Any, Any]) -> dict[str, Any]:
+        """Добавляет контекстные поля к логируемым данным."""
         start_time = start_time_var.get() or time.time()
         return {
             "trace_id": StructuredLogger._get_trace_id(),
@@ -32,26 +40,32 @@ class StructuredLogger:
 
     @staticmethod
     def info(event: str, **kwargs: Any) -> None:
+        """Логирует информационное сообщение с контекстом."""
         logger.bind(**StructuredLogger._add_context(kwargs)).info(event)
 
     @staticmethod
     def warning(event: str, **kwargs: Any) -> None:
+        """Логирует предупреждающее сообщение с контекстом."""
         logger.bind(**StructuredLogger._add_context(kwargs)).warning(event)
 
     @staticmethod
     def error(event: str, **kwargs: Any) -> None:
+        """Логирует сообщение об ошибке с контекстом."""
         logger.bind(**StructuredLogger._add_context(kwargs)).error(event)
 
     @staticmethod
     def exception(event: str, **kwargs: Any) -> None:
+        """Логирует исключение с контекстом."""
         logger.bind(**StructuredLogger._add_context(kwargs)).exception(event)
 
     @staticmethod
     def debug(event: str, **kwargs: Any) -> None:
+        """Логирует отладочное сообщение с контекстом."""
         logger.bind(**StructuredLogger._add_context(kwargs)).debug(event)
 
     @staticmethod
     def simplify(value: Any, max_depth: int = 5) -> Any:
+        """Упрощает объект для логирования, избегая циклических ссылок и ограничивая глубину."""
         return StructuredLogger._simplify_internal(
             value, visited_ids=set(), depth=0, max_depth=max_depth
         )
@@ -60,6 +74,7 @@ class StructuredLogger:
     def _simplify_internal(
         value: Any, visited_ids: set[int], depth: int, max_depth: int
     ) -> Any:
+        """Внутренняя рекурсивная функция для упрощения объектов."""
         if depth > max_depth:
             return f"<max-depth-exceeded-{type(value).__name__}>"
 
@@ -110,11 +125,13 @@ class StructuredLogger:
 
     @staticmethod
     def setup() -> None:
+        """Настраивает логгер для структурированного логирования в формате JSON."""
         global logger
         logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
         logger.remove()
 
         def serialize(record: Any) -> str:
+            """Сериализует запись лога в JSON-формат."""
             return json.dumps(
                 {
                     "timestamp": record["time"].timestamp(),

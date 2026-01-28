@@ -3,23 +3,36 @@ from time import time
 from discord import Interaction, app_commands
 from discord.ext.commands import Bot, Cog
 
-from ..utils import APIClient
+from ..http import APIClient
 
 
 class ApiTest(Cog):
-    def __init__(self, bot: Bot):
-        self.bot = bot
+    """
+    Ког для тестирования взаимодействия с FastAPI приложением.
+    Использует фабрику APIClient для создания Httpx или Aiohttp клиента.
+    Позволяет измерить время отклика API.
+    """
 
-    @app_commands.command(name="api_test", description="test the fastapi app")
-    async def api_test(self, interaction: Interaction):
+    def __init__(self, bot: Bot, api_client_factory=APIClient):
+        self.bot = bot
+        self.api_client_factory = api_client_factory
+
+    async def api_test(self) -> str:
+        """
+        Тестирует эндпоинт /test/ FastAPI приложения.
+        Измеряет время отклика API и возвращает результат вместе с задержкой.
+        """
         start_time = time()
-        async with APIClient() as api_client:
-            result = await api_client.get("/test")
+        async with self.api_client_factory() as api_client:
+            result = await api_client.get("/test/")
         end_time = time()
         api_latency = end_time - start_time
-        await interaction.response.send_message(
-            f"`{result}`\n`latency: ~{api_latency}s`"
-        )
+        return f"`{result}`\n`latency: ~{api_latency}s`"
+
+    @app_commands.command(name="api_test", description="test the fastapi app")
+    async def _api_test(self, interaction: Interaction):
+        """Тестирует эндпоинт /test/ через команду /api_test."""
+        await interaction.response.send_message(await self.api_test())
 
 
 async def setup(bot: Bot):

@@ -11,6 +11,11 @@ from .utils import Helpers
 
 
 class TheBot(Bot):
+    """
+    Основной класс бота, наследующий от discord.ext.commands.Bot.
+    Настраивает префикс команд, интенты, обработку ошибок и загрузку когов.
+    """
+
     def __init__(self):
         intents = Intents.default()
         intents.message_content = True
@@ -27,6 +32,9 @@ class TheBot(Bot):
         self.tree.on_error = self.on_tree_error
 
     async def interaction_check(self, interaction: Interaction) -> bool:
+        """
+        Логирует каждое взаимодействие с ботом.
+        """
         StructuredLogger.info(
             "[bot] issued command",
             user=str(interaction.user),  # type: ignore
@@ -38,11 +46,17 @@ class TheBot(Bot):
         return True
 
     async def setup_hook(self):
+        """
+        Загружает все указанные в конфиге когы и синхронизирует дерево команд.
+        """
         await self.load_all_cogs()
         await self.tree.sync()
         self.loop.create_task(self.set_presence())  # pyright: ignore[reportAttributeAccessIssue]
 
     async def set_presence(self):
+        """
+        Устанавливает статус бота после его готовности.
+        """
         await self.wait_until_ready()
         await self.change_presence(
             status=Status.online,
@@ -52,9 +66,17 @@ class TheBot(Bot):
             ),
         )
 
-    async def load_all_cogs(self, reload_: bool = False) -> list:
+    async def load_all_cogs(
+        self, reload_: bool = False, abs_cogs_path: str | None = None, log: bool = True
+    ) -> list:
+        """
+        Загружает или перезагружает все когы, указанные в конфиге.
+        Возвращает список неудачных загрузок.
+        """
         failed = []
-        abs_cogs_path = dirname(realpath(argv[0])) + "/cogs"
+        abs_cogs_path = (
+            abs_cogs_path if abs_cogs_path else dirname(realpath(argv[0])) + "/cogs"
+        )
 
         for file in listdir(abs_cogs_path):
             if file[:-3] in Config.BOT_COGS:
@@ -62,21 +84,56 @@ class TheBot(Bot):
                 try:
                     if reload_:
                         await self.reload_extension(cog_path)
-                        StructuredLogger.info(f"[bot] reloaded cog: {cog_path}")
+                        if log:
+                            StructuredLogger.info(f"[bot] reloaded cog: {cog_path}")
 
                     else:
                         await self.load_extension(cog_path)
-                        StructuredLogger.info(f"[bot] loaded cog: {cog_path}")
+                        if log:
+                            StructuredLogger.info(f"[bot] loaded cog: {cog_path}")
 
                 except Exception as e:
                     failed.append(f"{cog_path}: {e}")
-                    StructuredLogger.exception(
-                        f"[bot] error while (re)loading cog: {cog_path}"
-                    )
+                    if log:
+                        StructuredLogger.exception(
+                            f"[bot] error while (re)loading cog: {cog_path}"
+                        )
+
+        return failed
+
+    async def unload_all_cogs(
+        self, abs_cogs_path: str | None = None, log: bool = True
+    ) -> list:
+        """
+        Выгружает все когы, указанные в конфиге.
+        Возвращает список неудачных выгрузок.
+        """
+        failed = []
+        abs_cogs_path = (
+            abs_cogs_path if abs_cogs_path else dirname(realpath(argv[0])) + "/cogs"
+        )
+
+        for file in listdir(abs_cogs_path):
+            if file[:-3] in Config.BOT_COGS:
+                cog_path = Helpers.get_extension_path(abs_cogs_path, file)
+                try:
+                    await self.unload_extension(cog_path)
+                    if log:
+                        StructuredLogger.info(f"[bot] unloaded cog: {cog_path}")
+
+                except Exception as e:
+                    failed.append(f"{cog_path}: {e}")
+                    if log:
+                        StructuredLogger.exception(
+                            f"[bot] error while unloading cog: {cog_path}"
+                        )
 
         return failed
 
     async def safe_reply(self, interaction: Interaction, content):
+        """
+        Безопасно отвечает на взаимодействие, учитывая его состояние.
+        """
         if interaction.response.is_done():
             await interaction.followup.send(content)
         else:
@@ -85,6 +142,10 @@ class TheBot(Bot):
     async def on_tree_error(
         self, interaction: Interaction, error: app_commands.AppCommandError
     ):
+        """
+        Универсальная обработка ошибок для всех команд бота.
+        Отправляет пользователю понятные сообщения об ошибках.
+        """
         if isinstance(error, app_commands.CommandInvokeError):
             error = error.original  # type: ignore
 
@@ -122,6 +183,20 @@ class TheBot(Bot):
         )
 
         raise error
+
+
+def create_bot() -> TheBot:
+    """
+    Создает и настраивает экземпляр бота TheBot.
+    Возвращает готовый к использованию экземпляр бота.
+    """
+    bot = TheBot()
+
+    @bot.event
+    async def on_ready():
+        StructuredLogger.info(f"[bot] started as {bot.user}")
+
+    return bot
 
 
 __all__ = ["TheBot"]

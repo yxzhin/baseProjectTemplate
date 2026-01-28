@@ -13,6 +13,10 @@ test_router = APIRouter(prefix="/test", tags=["test"])
 
 @test_router.get("/", response_model=TestResponse)
 async def test(session: AsyncSession = Depends(Database.dependency)) -> Any:  # type: ignore
+    """
+    Проверочный эндпоинт для тестирования работоспособности API.
+    Возвращает сообщение и количество пользователей в базе данных.
+    """
     query = select(func.count()).select_from(User)
     users_count = await session.scalar(query)
     return {"message": "it works!! :tada:", "users_count": users_count}

@@ -6,6 +6,11 @@ ConfigLoader.import_env()
 
 
 class Config:
+    """
+    Конфигурационные параметры приложения, загружаемые из переменных окружения.
+    Атрибуты доступны напрямую, без создания экземпляра класса.
+    """
+
     BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
     BOT_SECRET = str(os.getenv("BOT_SECRET"))
     BOT_CLIENT_ID = int(os.getenv("BOT_CLIENT_ID"))  # type: ignore

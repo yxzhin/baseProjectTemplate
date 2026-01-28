@@ -9,6 +9,10 @@ from ..services import RedisService
 
 @asynccontextmanager
 async def lifespan(_: Any) -> AsyncGenerator[None]:  # type: ignore
+    """
+    Контекстный менеджер для управления временем жизни приложения FastAPI.
+    Инициализирует и закрывает ресурсы при старте и остановке приложения.
+    """
     StructuredLogger.setup()
     try:
         await Database.init()

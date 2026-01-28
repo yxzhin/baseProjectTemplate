@@ -14,6 +14,7 @@ async def get_user_by_discord_id(
     discord_id: int,
     session: AsyncSession = Depends(Database.dependency),
 ):
+    """Получает пользователя по его Discord ID."""
     user = await UserRepository.get_user_by_discord_id(
         session=session, discord_id=discord_id
     )
@@ -29,6 +30,7 @@ async def get_user_by_username(
     username: str,
     session: AsyncSession = Depends(Database.dependency),
 ):
+    """Получает пользователя по его имени пользователя."""
     user = await UserRepository.get_user_by_username(session=session, username=username)
 
     if not user:
@@ -43,6 +45,7 @@ async def get_users(
     limit: int | None = None,
     session: AsyncSession = Depends(Database.dependency),
 ):
+    """Получает список пользователей с поддержкой пагинации."""
     if page is not None and page < 1 or limit is not None and limit < 1:
         raise HTTPException(
             status_code=400, detail="page and limit must be greater than 0"
@@ -67,6 +70,7 @@ async def add_user(
     response: Response,
     session: AsyncSession = Depends(Database.dependency),
 ):
+    """Добавляет нового пользователя в базу данных."""
     if await UserRepository.get_user_by_discord_id(
         session=session, discord_id=user.discord_id
     ):

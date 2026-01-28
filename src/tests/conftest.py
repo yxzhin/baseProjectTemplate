@@ -1,5 +1,6 @@
 from collections.abc import AsyncGenerator
 
+import discord.ext.test as dpytest
 import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
@@ -10,12 +11,15 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from src.bot.app import create_bot
+from src.bot.app.http import APIClient, HttpxTestsClient
 from src.server.app.api import test_router, users_router
 from src.server.app.db import Base, Database
 
 
 @pytest.fixture(scope="session")
 def app() -> FastAPI:
+    """Создает FastAPI приложение для тестирования."""
     app = FastAPI(prefix="/api")
     app.include_router(test_router)
     app.include_router(users_router)
@@ -24,6 +28,7 @@ def app() -> FastAPI:
 
 @pytest.fixture(scope="session")
 async def test_engine():
+    """Создает асинхронный движок базы данных для тестов."""
     engine = create_async_engine(
         "sqlite+aiosqlite:///:memory:",
         future=True,
@@ -38,6 +43,7 @@ async def test_engine():
 
 @pytest.fixture(scope="function")
 async def db_session(test_engine) -> AsyncGenerator[AsyncSession]:
+    """Создает новую сессию и откатывает все изменения после теста."""
     async with test_engine.connect() as conn:
         transaction = await conn.begin()
 
@@ -61,7 +67,9 @@ async def db_session(test_engine) -> AsyncGenerator[AsyncSession]:
 
 
 @pytest.fixture(scope="function")
-async def client(app: FastAPI, db_session: AsyncSession):
+async def httpx_client(app: FastAPI, db_session: AsyncSession):
+    """Создает HTTP-клиент с переопределенной зависимостью базы данных для тестирования API."""
+
     async def override_get_db_session():
         yield db_session
 
@@ -77,7 +85,22 @@ async def client(app: FastAPI, db_session: AsyncSession):
 
 
 @pytest.fixture
-def create_user(client):
+def api_client_factory(httpx_client: AsyncClient):
+    """Фабрика для создания HttpxTestsClient, обернутого в APIClient."""
+
+    def _factory():
+        return APIClient(http_client=HttpxTestsClient(httpx_client))
+
+    return _factory
+
+
+@pytest.fixture
+def create_user(httpx_client):
+    """
+    Фикстура для создания пользователя через API.
+    Возвращает функцию, которая создает пользователя с заданными параметрами.
+    """
+
     async def _create_user(
         discord_id: int,
         username: str,
@@ -89,9 +112,18 @@ def create_user(client):
             "avatar_url": avatar_url or "http://placehold.co/730x370",
         }
 
-        response = await client.post("/users/add", json=payload)
+        response = await httpx_client.post("/users/add", json=payload)
         assert response.status_code == 201, response.text
 
         return response.json()
 
     return _create_user
+
+
+@pytest.fixture
+async def bot():
+    """Создает и настраивает бота для тестирования с dpytest."""
+    bot = create_bot()
+    dpytest.configure(bot)  # pyright: ignore[reportGeneralTypeIssues]
+    yield bot
+    await dpytest.empty_queue()

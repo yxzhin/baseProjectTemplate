@@ -8,8 +8,11 @@ from ..repositories import UserRepository
 
 
 class Seeder:
+    """Класс для заполнения и очистки базы данных начальными данными."""
+
     @staticmethod
     async def seed(session: AsyncSession) -> bool:
+        """Заполняет базу данных начальными данными."""
         users_to_add = []
         for i in range(15):
             user_input = UserAddInput(
@@ -28,5 +31,6 @@ class Seeder:
 
     @staticmethod
     async def clear(session: AsyncSession):
+        """Очищает базу данных."""
         await session.execute(delete(User))
         await session.flush()

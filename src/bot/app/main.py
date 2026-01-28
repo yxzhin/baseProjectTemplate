@@ -1,16 +1,12 @@
 from ...shared import StructuredLogger
-from . import TheBot
+from . import create_bot
 from .conf import Config
 
 
 def main() -> None:
+    """Точка входа для запуска бота. biscuits."""
     StructuredLogger.setup()
-    bot = TheBot()
-
-    @bot.event
-    async def on_ready():
-        StructuredLogger.info(f"[bot] started as {bot.user}")
-
+    bot = create_bot()
     bot.run(Config.BOT_TOKEN)
 
 

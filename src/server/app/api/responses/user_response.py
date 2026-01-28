@@ -4,6 +4,8 @@ from pydantic import BaseModel, ConfigDict
 
 
 class UserOutResponse(BaseModel):
+    """Модель выходных данных для представления пользователя."""
+
     id: int
     discord_id: int
     username: str
@@ -15,6 +17,8 @@ class UserOutResponse(BaseModel):
 
 
 class UsersOutResponse(BaseModel):
+    """Модель выходных данных для представления списка пользователей."""
+
     users: list[UserOutResponse]
     total: int
 

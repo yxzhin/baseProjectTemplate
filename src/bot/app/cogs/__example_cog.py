@@ -3,6 +3,8 @@ from discord.ext.commands import Bot, Cog
 
 
 class ExampleCog(Cog):
+    """Пример кога для демонстрации структуры."""
+
     def __init__(self, bot: Bot):
         self.bot = bot
 

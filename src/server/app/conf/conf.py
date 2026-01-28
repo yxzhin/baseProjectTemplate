@@ -6,6 +6,11 @@ ConfigLoader.import_env()
 
 
 class Config:
+    """
+    Конфигурационные параметры приложения, загружаемые из переменных окружения.
+    Атрибуты доступны напрямую, без создания экземпляра класса.
+    """
+
     DATABASE_USERNAME = os.getenv("DATABASE_USERNAME", "admin")
     DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "admin")
     DATABASE_HOST = os.getenv("DATABASE_HOST", "localhost")

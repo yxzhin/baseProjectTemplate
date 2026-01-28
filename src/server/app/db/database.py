@@ -14,6 +14,11 @@ from ..conf import Config
 
 
 class Database:
+    """
+    Класс для управления подключением к базе данных с использованием SQLAlchemy.
+    Предоставляет методы для инициализации, получения сессий и закрытия соединения.
+    """
+
     _engine: AsyncEngine | None = None
     _SessionLocal: async_sessionmaker = None  # type: ignore
 

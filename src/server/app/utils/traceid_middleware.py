@@ -8,7 +8,13 @@ from ....shared import StructuredLogger, start_time_var, trace_id_var
 
 
 class TraceIDMiddleware(BaseHTTPMiddleware):
+    """
+    Middleware для генерации и добавления trace_id в каждый входящий HTTP-запрос.
+    Trace_id используется для отслеживания запросов в логах.
+    """
+
     async def dispatch(self, request: Request, call_next):  # type: ignore
+        """Обрабатывает входящий HTTP-запрос, добавляя trace_id и логируя начало и конец запроса."""
         trace_id = str(uuid.uuid4())  # Генерируем trace_id
         trace_id_var.set(
             trace_id  # type: ignore

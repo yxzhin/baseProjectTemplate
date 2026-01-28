@@ -1,5 +1,9 @@
-async def test_test_route(client):
-    response = await client.get("/test/")
+async def test_test_route(httpx_client):
+    """
+    Тестирует маршрут /test/ API сервера.
+    Проверяет, что ответ содержит ожидаемые поля и значения.
+    """
+    response = await httpx_client.get("/test/")
     assert response.status_code == 200
 
     data = response.json()

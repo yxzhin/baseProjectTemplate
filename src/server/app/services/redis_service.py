@@ -5,6 +5,11 @@ from ..conf import Config
 
 
 class RedisService:
+    """
+    Класс для управления подключением к Redis.
+    Предоставляет методы для инициализации и закрытия соединения.
+    """
+
     _redis: Redis | None = None
     auth_state_prefix = "auth_state:"
 

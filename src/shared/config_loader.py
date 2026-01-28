@@ -2,10 +2,16 @@ from pathlib import Path
 
 
 class ConfigLoader:
+    """Класс для загрузки переменных окружения из файла .env."""
+
     BASE_PATH = Path(__file__).resolve().parent.parent.parent
 
     @staticmethod
     def import_env() -> None:
+        """
+        Загружает переменные окружения из файла .env, если он существует.
+        Если файл не найден, выводится сообщение и загрузка пропускается.
+        """
         try:
             from dotenv import load_dotenv
         except Exception:
