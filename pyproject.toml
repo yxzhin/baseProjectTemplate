@@ -83,8 +83,7 @@ exclude = [
 [tool.pytest.ini_options]
 addopts = "-v" #  --cov=src/server --cov=src/bot --cov-report=html
 testpaths = [
-    "src/server/tests",
-    "src/bot/tests",
+    "src/tests",
 ]
 pythonpath = ["."]
 asyncio_mode = "auto"
