@@ -16,7 +16,7 @@ from src.server.app.db import Base, Database
 
 @pytest.fixture(scope="session")
 def app() -> FastAPI:
-    app = FastAPI()
+    app = FastAPI(prefix="/api")
     app.include_router(test_router)
     app.include_router(users_router)
     return app

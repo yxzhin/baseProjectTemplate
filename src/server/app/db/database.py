@@ -42,6 +42,7 @@ class Database:
     async def get_session(cls) -> AsyncGenerator[AsyncSession]:  # type: ignore
         """
         Создает и возвращает асинхронную сессию SQLAlchemy.
+        Используется внутри контекстного менеджера async with.
         """
         if cls._SessionLocal is None:  # type: ignore
             raise RuntimeError(

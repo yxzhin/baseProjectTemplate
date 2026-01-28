@@ -31,7 +31,7 @@ async def test_get_users(client, create_user):
         users.append(user)
 
     # test default pagination (page=1, limit=10)
-    response = await client.get("/users")
+    response = await client.get("/users/")
     assert response.status_code == 200
 
     fetched = response.json()
@@ -43,7 +43,7 @@ async def test_get_users(client, create_user):
     assert fetched_users[9]["id"] == users[9]["id"]
 
     # test page=2, limit=5
-    response = await client.get("/users?page=2&limit=5")
+    response = await client.get("/users/?page=2&limit=5")
     assert response.status_code == 200
 
     fetched = response.json()
@@ -55,8 +55,8 @@ async def test_get_users(client, create_user):
     assert fetched_users[4]["id"] == users[9]["id"]
 
     # test invalid page and limit
-    response = await client.get("/users?page=0&limit=5")
+    response = await client.get("/users/?page=0&limit=5")
     assert response.status_code == 400
 
-    response = await client.get("/users?page=1&limit=0")
+    response = await client.get("/users/?page=1&limit=0")
     assert response.status_code == 400

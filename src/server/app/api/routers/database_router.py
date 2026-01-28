@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ...db import Database
 from ...utils import Seeder
 
-database_router = APIRouter(prefix="/database")
+database_router = APIRouter(prefix="/database", tags=["database"])
 
 
 @database_router.get("/seed")

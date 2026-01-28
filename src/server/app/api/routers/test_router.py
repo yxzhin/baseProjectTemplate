@@ -8,7 +8,7 @@ from ...db import Database
 from ...db.models import User
 from ..responses import TestResponse
 
-test_router = APIRouter(prefix="/test")
+test_router = APIRouter(prefix="/test", tags=["test"])
 
 
 @test_router.get("/", response_model=TestResponse)

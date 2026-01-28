@@ -2,9 +2,18 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from .api import api_router
+from .conf import Config
 from .utils import TraceIDMiddleware, lifespan
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    title=Config.APP_NAME,
+    description=Config.APP_DESCRIPTION,
+    version=Config.APP_VERSION,
+    docs_url="/docs" if Config.ENABLE_API_DOCS else None,
+    redoc_url="/redoc" if Config.ENABLE_API_DOCS else None,
+    openapi_url="/openapi.json" if Config.ENABLE_API_DOCS else None,
+)
 
 app.add_middleware(
     CORSMiddleware,

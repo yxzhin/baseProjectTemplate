@@ -15,14 +15,14 @@ repos:
         entry: uv run ruff check --config pyproject.toml --force-exclude --fix --exit-non-zero-on-fix
         language: system
         types: [python]
-        exclude: ^alembic/.*
+        exclude: ^src/server/alembic/.*
 
       - id: ruff-format
         name: ruff format
         entry: uv run ruff format --config pyproject.toml --force-exclude --exit-non-zero-on-format
         language: system
         types: [python]
-        exclude: ^alembic/.*
+        exclude: ^src/server/alembic/.*
 
   - repo: local
     hooks:
@@ -31,7 +31,7 @@ repos:
         entry: uv run mypy --config-file pyproject.toml
         language: system
         types: [python]
-        exclude: ^alembic/.*
+        exclude: ^src/server/alembic/.*
 
   - repo: local
     hooks:

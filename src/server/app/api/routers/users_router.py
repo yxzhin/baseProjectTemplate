@@ -6,7 +6,7 @@ from ...inputs import UserAddInput
 from ...repositories import UserRepository
 from ..responses import UserOutResponse, UsersOutResponse
 
-users_router = APIRouter(prefix="/users")
+users_router = APIRouter(prefix="/users", tags=["users"])
 
 
 @users_router.get("/{discord_id}", response_model=UserOutResponse)
@@ -37,7 +37,7 @@ async def get_user_by_username(
     return user
 
 
-@users_router.get("", response_model=UserOutResponse | UsersOutResponse)
+@users_router.get("/", response_model=UsersOutResponse)
 async def get_users(
     page: int | None = None,
     limit: int | None = None,
