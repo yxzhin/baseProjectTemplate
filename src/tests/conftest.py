@@ -1,33 +1,29 @@
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Callable
+from typing import Any
 
 import discord.ext.test as dpytest
 import pytest
+from dishka import AsyncContainer, make_async_container
+from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
 
-from src.bot.app import create_bot
+from src.bot.app import TheBot, create_bot
 from src.bot.app.http import APIClient, HttpxTestsClient
-from src.server.app.api import test_router, users_router
-from src.server.app.db import Base, Database
+from src.server.app.api.routers import *
+from src.server.app.db import Base
+from src.server.app.di import RepositoryProvider, ServiceProvider, TestDatabaseProvider
 
 
-@pytest.fixture(scope="session")
-def app() -> FastAPI:
-    """Создает FastAPI приложение для тестирования."""
-    app = FastAPI(prefix="/api")
-    app.include_router(test_router)
-    app.include_router(users_router)
-    return app
-
-
-@pytest.fixture(scope="session")
-async def test_engine():
+@pytest.fixture
+async def test_engine() -> AsyncGenerator[AsyncEngine, Any]:
     """Создает асинхронный движок базы данных для тестов."""
     engine = create_async_engine(
         "sqlite+aiosqlite:///:memory:",
@@ -41,8 +37,8 @@ async def test_engine():
     await engine.dispose()
 
 
-@pytest.fixture(scope="function")
-async def db_session(test_engine) -> AsyncGenerator[AsyncSession]:
+@pytest.fixture
+async def db_session(test_engine: AsyncEngine) -> AsyncGenerator[AsyncSession, Any]:
     """Создает новую сессию и откатывает все изменения после теста."""
     async with test_engine.connect() as conn:
         transaction = await conn.begin()
@@ -67,13 +63,32 @@ async def db_session(test_engine) -> AsyncGenerator[AsyncSession]:
 
 
 @pytest.fixture(scope="function")
-async def httpx_client(app: FastAPI, db_session: AsyncSession):
-    """Создает HTTP-клиент с переопределенной зависимостью базы данных для тестирования API."""
+async def container(db_session: AsyncSession) -> AsyncGenerator[AsyncContainer, Any]:
+    """Создаёт асинхронный контейнер Dishka для внедрения зависимостей в приложение."""
+    container = make_async_container(
+        TestDatabaseProvider(session=db_session),
+        RepositoryProvider(),
+        ServiceProvider(),
+    )
+    yield container
+    await container.close()
 
-    async def override_get_db_session():
-        yield db_session
 
-    app.dependency_overrides[Database.dependency] = override_get_db_session
+@pytest.fixture
+def app(container: AsyncContainer) -> FastAPI:
+    """Создает FastAPI приложение для тестирования."""
+    app = FastAPI()
+    app.include_router(test_router)
+    app.include_router(users_router)
+    app.include_router(database_router)
+
+    setup_dishka(container=container, app=app)
+    return app
+
+
+@pytest.fixture
+async def httpx_client(app: FastAPI) -> AsyncGenerator[AsyncClient, Any]:
+    """Создает HTTP-клиент для тестирования API."""
 
     async with AsyncClient(
         transport=ASGITransport(app=app),
@@ -81,11 +96,9 @@ async def httpx_client(app: FastAPI, db_session: AsyncSession):
     ) as ac:
         yield ac
 
-    app.dependency_overrides.clear()
-
 
 @pytest.fixture
-def api_client_factory(httpx_client: AsyncClient):
+def api_client_factory(httpx_client: AsyncClient) -> Callable[[], APIClient]:
     """Фабрика для создания HttpxTestsClient, обернутого в APIClient."""
 
     def _factory():
@@ -95,7 +108,7 @@ def api_client_factory(httpx_client: AsyncClient):
 
 
 @pytest.fixture
-def create_user(httpx_client):
+def create_user(httpx_client: AsyncClient) -> Callable[[int, str, str | None], Any]:
     """
     Фикстура для создания пользователя через API.
     Возвращает функцию, которая создает пользователя с заданными параметрами.
@@ -121,9 +134,9 @@ def create_user(httpx_client):
 
 
 @pytest.fixture
-async def bot():
+async def bot(api_client_factory) -> AsyncGenerator[TheBot, Any]:
     """Создает и настраивает бота для тестирования с dpytest."""
-    bot = create_bot()
+    bot = create_bot(api_client_factory=api_client_factory)
     dpytest.configure(bot)  # pyright: ignore[reportGeneralTypeIssues]
     yield bot
     await dpytest.empty_queue()

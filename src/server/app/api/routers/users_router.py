@@ -1,14 +1,23 @@
+from dishka.integrations.fastapi import DishkaRoute, FromDishka, inject
 from fastapi import APIRouter, HTTPException, Response, status
 
 from ...inputs import UserCreateInput
 from ...services import UserService
 from ..responses import UserOutResponse, UsersOutResponse
 
-users_router = APIRouter(prefix="/users", tags=["users"])
+users_router = APIRouter(
+    prefix="/users",
+    tags=["users"],
+    route_class=DishkaRoute,
+)
 
 
 @users_router.get("/{discord_id}", response_model=UserOutResponse)
-async def get_user_by_discord_id(discord_id: int, user_service: UserService):
+@inject
+async def get_user_by_discord_id(
+    discord_id: int,
+    user_service: FromDishka[UserService],
+):
     """Получает пользователя по его Discord ID."""
     user = await user_service.get_user_by_discord_id(discord_id=discord_id)
 
@@ -19,7 +28,11 @@ async def get_user_by_discord_id(discord_id: int, user_service: UserService):
 
 
 @users_router.get("/username/{username}", response_model=UserOutResponse)
-async def get_user_by_username(username: str, user_service: UserService):
+@inject
+async def get_user_by_username(
+    username: str,
+    user_service: FromDishka[UserService],
+):
     """Получает пользователя по его имени пользователя."""
     user = await user_service.get_user_by_username(username=username)
 
@@ -30,8 +43,9 @@ async def get_user_by_username(username: str, user_service: UserService):
 
 
 @users_router.get("/", response_model=UsersOutResponse)
+@inject
 async def get_users(
-    user_service: UserService,
+    user_service: FromDishka[UserService],
     page: int | None = None,
     limit: int | None = None,
 ):
@@ -51,10 +65,11 @@ async def get_users(
 
 
 @users_router.post("/add", response_model=UserOutResponse)
+@inject
 async def add_user(
     user: UserCreateInput,
     response: Response,
-    user_service: UserService,
+    user_service: FromDishka[UserService],
 ):
     """Добавляет нового пользователя в базу данных."""
     if await user_service.get_user_by_discord_id(discord_id=user.discord_id):

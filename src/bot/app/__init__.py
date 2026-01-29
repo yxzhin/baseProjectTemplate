@@ -40,7 +40,7 @@ class TheBot(Bot):
         """
         await self.load_all_cogs()
         await self.tree.sync()
-        self.loop.create_task(self._set_presence())
+        self.loop.create_task(self._set_presence())  # type: ignore
 
     async def load_all_cogs(
         self, reload_: bool = False, abs_cogs_path: str | None = None, log: bool = True
@@ -112,10 +112,10 @@ class TheBot(Bot):
         """
         StructuredLogger.info(
             "[bot] issued command",
-            user=str(interaction.user),
+            user=str(interaction.user),  # type: ignore
             command_name=interaction.command.name,  # type: ignore
             command_extras=interaction.command.extras,  # type: ignore
-            user_id=interaction.user.id,
+            user_id=interaction.user.id,  # type: ignore
             guild_id=interaction.guild.id,  # type: ignore
         )
         return True
@@ -195,12 +195,12 @@ class TheBot(Bot):
         StructuredLogger.info("[bot] closed")
 
 
-def create_bot() -> TheBot:
+def create_bot(api_client_factory=APIClient) -> TheBot:
     """
     Создает и настраивает экземпляр бота TheBot.
     Возвращает готовый к использованию экземпляр бота.
     """
-    bot = TheBot()
+    bot = TheBot(api_client_factory=api_client_factory)
 
     @bot.event
     async def on_ready():

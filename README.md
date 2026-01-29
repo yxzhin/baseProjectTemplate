@@ -2,6 +2,10 @@
 
 base fastapi, discord.py &amp;&amp; svelte project template. with &lt;3 by yxzhin ^^
 
+## features
+
+- //@TODO
+
 ## requirements
 
 - docker
@@ -23,6 +27,10 @@ base fastapi, discord.py &amp;&amp; svelte project template. with &lt;3 by yxzhi
 3. in the second one, run the bot: `scripts\run-bot` &amp;&amp; use commands `/ping` &amp;&amp; `/api_test` to test it
 4. in the third one, run the client: `scripts\run-client` &amp;&amp; go to `http://localhost:5173/users` to test it
 5. it works!! :tada:
+
+## testing
+
+- use `uv run pytest` to run server && bot tests
 
 ## credits
 

@@ -4,25 +4,26 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ....shared import StructuredLogger
 from ..db.models import User
 from ..inputs import UserCreateInput
-from ..repositories import UserRepository
+from ..services import UserService
 
 
 class Seeder:
     """Класс для заполнения и очистки базы данных начальными данными."""
 
     @staticmethod
-    async def seed(session: AsyncSession) -> bool:
+    async def seed(user_service: UserService, session: AsyncSession) -> bool:
         """Заполняет базу данных начальными данными."""
-        users_to_add = []
+        users_to_create = []
         for i in range(15):
             user_input = UserCreateInput(
                 discord_id=7373 + i * 73,
                 username=f"user_{i * 37}",
                 avatar_url=f"https://placehold.co/73x37?text=user_{i * 37}",
             )
-            users_to_add.append(user_input)
+            users_to_create.append(user_input)
         try:
-            await UserRepository.add_users(session=session, users=users_to_add)
+            await user_service.create_users(users=users_to_create)
+            await session.flush()
             return True
         except Exception:
             await session.rollback()

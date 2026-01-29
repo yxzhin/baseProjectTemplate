@@ -1,10 +1,11 @@
+from dishka import make_async_container
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from .api import api_router
 from .conf import Config
-from .di import container
+from .di import DatabaseProvider, RepositoryProvider, ServiceProvider
 from .utils import TraceIDMiddleware, lifespan
 
 app = FastAPI(
@@ -27,6 +28,12 @@ app.add_middleware(
 
 app.add_middleware(TraceIDMiddleware)
 
-setup_dishka(container=container, app=app)
-
 app.include_router(api_router)
+
+container = make_async_container(
+    DatabaseProvider(),
+    RepositoryProvider(),
+    ServiceProvider(),
+)
+
+setup_dishka(container=container, app=app)
