@@ -1,3 +1,3 @@
-from .user_input import UserAddInput
+from .user_input import UserCreateInput
 
-__all__ = ["UserAddInput"]
+__all__ = ["UserCreateInput"]

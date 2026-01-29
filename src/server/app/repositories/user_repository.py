@@ -1,45 +1,45 @@
+from collections.abc import Sequence
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..db.models import User
-from ..inputs import UserAddInput
 
 
 class UserRepository:
     """Репозиторий для управления операциями с пользователями в базе данных."""
 
-    @staticmethod
-    async def get_user_by_discord_id(
-        session: AsyncSession, discord_id: int
-    ) -> User | None:
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def get_user_by_discord_id(self, discord_id: int) -> User | None:
         """Получает пользователя по его Discord ID."""
-        result = await session.execute(
+        result = await self.session.execute(
             select(User).where(User.discord_id == discord_id)
         )
         return result.scalar_one_or_none()
 
-    @staticmethod
-    async def get_user_by_username(session: AsyncSession, username: str) -> User | None:
+    async def get_user_by_username(self, username: str) -> User | None:
         """Получает пользователя по его имени пользователя."""
-        result = await session.execute(select(User).where(User.username == username))
+        result = await self.session.execute(
+            select(User).where(User.username == username)
+        )
         return result.scalar_one_or_none()
 
-    @staticmethod
-    def get_users_query():
-        """Возвращает запрос для получения всех пользователей, отсортированных по ID."""
-        return select(User).order_by(User.id)
+    async def get_users(self, offset: int = 0, limit: int = 10) -> Sequence[User]:
+        """Получает список пользователей с поддержкой пагинации."""
+        result = await self.session.execute(select(User).offset(offset).limit(limit))
+        return result.scalars().all()
 
-    @staticmethod
-    async def add_users(session: AsyncSession, users: list[UserAddInput]) -> list[User]:
-        """Добавляет несколько пользователей в базу данных."""
-        new_users = []
-        for user in users:
-            new_user = User(
-                discord_id=user.discord_id,
-                username=user.username,
-                avatar_url=user.avatar_url,
-            )
-            new_users.append(new_user)
-        session.add_all(new_users)
-        await session.flush()
-        return new_users
+    async def create_user(
+        self, discord_id: int, username: str, avatar_url: str | None = None
+    ) -> User:
+        """Создает нового пользователя в базе данных."""
+        new_user = User(
+            discord_id=discord_id,
+            username=username,
+            avatar_url=avatar_url,
+        )
+        self.session.add(new_user)
+        await self.session.flush()
+        return new_user

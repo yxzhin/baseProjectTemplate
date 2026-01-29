@@ -1,5 +1,6 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import Any
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
@@ -20,7 +21,7 @@ class Database:
     """
 
     _engine: AsyncEngine | None = None
-    _SessionLocal: async_sessionmaker = None  # type: ignore
+    _SessionLocal: async_sessionmaker | None = None
 
     @classmethod
     async def init(cls) -> None:
@@ -44,23 +45,23 @@ class Database:
 
     @classmethod
     @asynccontextmanager
-    async def get_session(cls) -> AsyncGenerator[AsyncSession]:  # type: ignore
+    async def get_session(cls) -> AsyncGenerator[AsyncSession, Any]:
         """
         Создает и возвращает асинхронную сессию SQLAlchemy.
         Используется внутри контекстного менеджера async with.
         """
-        if cls._SessionLocal is None:  # type: ignore
+        if cls._SessionLocal is None:
             raise RuntimeError(
                 "Database is not initialized. Call Database.init() first."
             )
 
-        async with cls._SessionLocal() as session:  # type: ignore
+        async with cls._SessionLocal() as session:
             StructuredLogger.info("session_created")
-            async with session.begin():  # type: ignore
+            async with session.begin():
                 yield session  # Сессия создается здесь
 
     @classmethod
-    async def dependency(cls) -> AsyncGenerator[AsyncSession]:  # type: ignore
+    async def dependency(cls) -> AsyncGenerator[AsyncSession, Any]:
         """
         Зависимость для FastAPI — отдаёт сессию БД.
         Используется в Depends(get_db_session).

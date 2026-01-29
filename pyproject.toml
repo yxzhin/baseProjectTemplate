@@ -9,6 +9,7 @@ dependencies = [
     "alembic>=1.18.1",
     "asyncpg>=0.31.0",
     "discord-py>=2.6.4",
+    "dishka>=1.7.2",
     "dotenv>=0.9.9",
     "fastapi[standard-no-fastapi-cloud-cli]>=0.128.0",
     "loguru>=0.7.3",

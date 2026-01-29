@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ....shared import StructuredLogger
 from ..db.models import User
-from ..inputs import UserAddInput
+from ..inputs import UserCreateInput
 from ..repositories import UserRepository
 
 
@@ -15,7 +15,7 @@ class Seeder:
         """Заполняет базу данных начальными данными."""
         users_to_add = []
         for i in range(15):
-            user_input = UserAddInput(
+            user_input = UserCreateInput(
                 discord_id=7373 + i * 73,
                 username=f"user_{i * 37}",
                 avatar_url=f"https://placehold.co/73x37?text=user_{i * 37}",

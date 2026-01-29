@@ -1,9 +1,9 @@
 from time import time
 
 from discord import Interaction, app_commands
-from discord.ext.commands import Bot, Cog
+from discord.ext.commands import Cog
 
-from ..http import APIClient
+from .. import TheBot
 
 
 class ApiTest(Cog):
@@ -13,9 +13,8 @@ class ApiTest(Cog):
     Позволяет измерить время отклика API.
     """
 
-    def __init__(self, bot: Bot, api_client_factory=APIClient):
+    def __init__(self, bot: TheBot):
         self.bot = bot
-        self.api_client_factory = api_client_factory
 
     async def api_test(self) -> str:
         """
@@ -23,7 +22,7 @@ class ApiTest(Cog):
         Измеряет время отклика API и возвращает результат вместе с задержкой.
         """
         start_time = time()
-        async with self.api_client_factory() as api_client:
+        async with self.bot.api_client_factory() as api_client:
             result = await api_client.get("/test/")
         end_time = time()
         api_latency = end_time - start_time
@@ -35,5 +34,5 @@ class ApiTest(Cog):
         await interaction.response.send_message(await self.api_test())
 
 
-async def setup(bot: Bot):
+async def setup(bot: TheBot):
     await bot.add_cog(ApiTest(bot))

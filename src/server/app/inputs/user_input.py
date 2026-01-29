@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class UserAddInput(BaseModel):
+class UserCreateInput(BaseModel):
     """Модель входных данных для добавления пользователя."""
 
     discord_id: int
