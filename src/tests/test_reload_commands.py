@@ -1,4 +1,4 @@
-from src.bot.app.cogs import Reload
+from src.bot.app.cogs import ReloadCog
 
 
 async def test_reload_command(bot):
@@ -7,7 +7,7 @@ async def test_reload_command(bot):
     Проверяет успешную перезагрузку кога 'ping'.
     """
     await bot.load_extension("src.bot.app.cogs.ping")
-    response = await Reload(bot, abs_cogs_path="src/bot/app/cogs").reload("ping")
+    response = await ReloadCog(bot, abs_cogs_path="src/bot/app/cogs").reload("ping")
     assert response[1] is True
     await bot.unload_extension("src.bot.app.cogs.ping")
 
@@ -22,7 +22,7 @@ async def test_reload_all_command(bot):
     )
     assert len(failed_to_load) == 0
 
-    response = await Reload(bot, abs_cogs_path="src/bot/app/cogs").reload_all()
+    response = await ReloadCog(bot, abs_cogs_path="src/bot/app/cogs").reload_all()
     assert len(response) == 0
 
     failed_to_unload = await bot.unload_all_cogs(

@@ -45,8 +45,6 @@ class AiohttpClient(BaseHttpClient):
         async with self.session.request(  # type: ignore
             method, url, params=params, json=json, data=data, headers=headers
         ) as resp:
-            # выбрасываем исключение при ошибке
-            resp.raise_for_status()
             # пытаемся вернуть JSON, если нет — текст
             result = None
             try:

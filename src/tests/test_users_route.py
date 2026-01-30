@@ -6,10 +6,14 @@ async def test_add_and_get_user_by_id(httpx_client, create_user):
     assert response.status_code == 200
 
     fetched = response.json()
-    assert fetched["id"] == user["id"]
-    assert fetched["discord_id"] == user["discord_id"]
-    assert fetched["username"] == user["username"]
-    assert fetched["avatar_url"] == user["avatar_url"]
+    assert fetched["success"] is True
+
+    fetched_user = fetched["user"]
+
+    assert fetched_user["id"] == user["id"]
+    assert fetched_user["discord_id"] == user["discord_id"]
+    assert fetched_user["username"] == user["username"]
+    assert fetched_user["avatar_url"] == user["avatar_url"]
 
 
 async def test_add_and_get_user_by_username(httpx_client, create_user):
@@ -20,10 +24,14 @@ async def test_add_and_get_user_by_username(httpx_client, create_user):
     assert response.status_code == 200
 
     fetched = response.json()
-    assert fetched["id"] == user["id"]
-    assert fetched["discord_id"] == user["discord_id"]
-    assert fetched["username"] == user["username"]
-    assert fetched["avatar_url"] == user["avatar_url"]
+    assert fetched["success"] is True
+
+    fetched_user = fetched["user"]
+
+    assert fetched_user["id"] == user["id"]
+    assert fetched_user["discord_id"] == user["discord_id"]
+    assert fetched_user["username"] == user["username"]
+    assert fetched_user["avatar_url"] == user["avatar_url"]
 
 
 async def test_get_users(httpx_client, create_user):
@@ -38,6 +46,8 @@ async def test_get_users(httpx_client, create_user):
     assert response.status_code == 200
 
     fetched = response.json()
+    assert fetched["success"] is True
+
     fetched_users = fetched["users"]
     total = fetched["total"]
 

@@ -1,5 +1,6 @@
-from .api_test import ApiTest
-from .ping import Ping
-from .reload import Reload
+from .api_test import ApiTestCog
+from .ping import PingCog
+from .reload import ReloadCog
+from .user import UserCog
 
-__all__ = ["ApiTest", "Ping", "Reload"]
+__all__ = ["ApiTestCog", "PingCog", "ReloadCog", "UserCog"]

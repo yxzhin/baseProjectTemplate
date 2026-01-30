@@ -23,20 +23,16 @@ class HttpxTestsClient(BaseHttpClient):
 
     async def get(self, path: str, **kwargs):
         resp = await self.client.get(path, **kwargs)
-        resp.raise_for_status()
         return resp.json()
 
     async def post(self, path: str, **kwargs):
         resp = await self.client.post(path, **kwargs)
-        resp.raise_for_status()
         return resp.json()
 
     async def put(self, path: str, **kwargs):
         resp = await self.client.put(path, **kwargs)
-        resp.raise_for_status()
         return resp.json()
 
     async def delete(self, path: str, **kwargs):
         resp = await self.client.delete(path, **kwargs)
-        resp.raise_for_status()
         return resp.json()

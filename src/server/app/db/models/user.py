@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, Integer, String, func
+from sqlalchemy import BigInteger, DateTime, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ...db import Base
@@ -14,8 +14,10 @@ class User(Base):
 
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    discord_id: Mapped[int] = mapped_column(nullable=False, unique=True, index=True)
+    id: Mapped[int] = mapped_column(Integer(), primary_key=True)
+    discord_id: Mapped[int] = mapped_column(
+        BigInteger(), nullable=False, unique=True, index=True
+    )
     username: Mapped[str] = mapped_column(String(255), nullable=False)
     avatar_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
     balance: Mapped[int] = mapped_column(Integer(), nullable=False, default=0)

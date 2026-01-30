@@ -2,7 +2,7 @@ from discord import Interaction, app_commands
 from discord.ext.commands import Bot, Cog
 
 
-class Ping(Cog):
+class PingCog(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
@@ -15,4 +15,4 @@ class Ping(Cog):
 
 
 async def setup(bot: Bot):
-    await bot.add_cog(Ping(bot))
+    await bot.add_cog(PingCog(bot))

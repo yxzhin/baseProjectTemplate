@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...services import UserService
 from ...utils import Seeder
-from ..responses import GeneralMessageResponse
+from ..responses import BaseResponse
 
 database_router = APIRouter(
     prefix="/database",
@@ -13,7 +13,7 @@ database_router = APIRouter(
 )
 
 
-@database_router.get("/seed", response_model=GeneralMessageResponse)
+@database_router.get("/seed", response_model=BaseResponse)
 @inject
 async def seed_database(
     user_service: FromDishka[UserService],
@@ -22,14 +22,14 @@ async def seed_database(
     """Заполняет базу данных начальными данными с помощью Seeder."""
     if not await Seeder.seed(user_service=user_service, session=session):
         raise HTTPException(status_code=500, detail="failed to seed the database")
-    return {"message": "database seeded successfully!! :tada:"}
+    return {"success": True, "message": "database seeded successfully!! :tada:"}
 
 
-@database_router.get("/clear", response_model=GeneralMessageResponse)
+@database_router.get("/clear", response_model=BaseResponse)
 @inject
 async def clear_database(
     session: FromDishka[AsyncSession],
 ):
     """Очищает начальные данные в базе данных с помощью Seeder."""
     await Seeder.clear(session=session)
-    return {"message": "database cleared successfully!! :tada:"}
+    return {"success": True, "message": "database cleared successfully!! :tada:"}

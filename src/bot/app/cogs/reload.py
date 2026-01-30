@@ -10,7 +10,7 @@ from .. import TheBot
 from ..utils import Helpers
 
 
-class Reload(Cog):
+class ReloadCog(Cog):
     def __init__(self, bot: TheBot, abs_cogs_path: str | None = None):
         self.bot = bot
         self.abs_cogs_path = (
@@ -51,15 +51,12 @@ class Reload(Cog):
         await self.bot.tree.sync(guild=interaction.guild)
 
         if result[1]:
-            await interaction.response.send_message(await self.reload(cog))
+            await interaction.response.send_message(result[0])
             StructuredLogger.info(f"[bot] successfully reloaded cog: {cog}")
             return
 
         StructuredLogger.exception(f"[bot] error while reloading cog: {cog}")
-        await interaction.response.send_message(
-            result[0],
-            ephemeral=True,
-        )
+        await interaction.response.send_message(result[0])
 
     @command(name="reload_all", description="reload all cogs")
     @is_owner()
@@ -68,9 +65,9 @@ class Reload(Cog):
         failed = await self.reload_all()
         await self.bot.tree.sync(guild=interaction.guild)
 
-        if failed:
+        if len(failed) > 0:
             await interaction.response.send_message(
-                ":x: some errors occurred:\n" + "\n".join(failed), ephemeral=True
+                ":x: some errors occurred:\n" + "\n".join(failed),
             )
             return
 
@@ -80,4 +77,4 @@ class Reload(Cog):
 
 
 async def setup(bot: TheBot):
-    await bot.add_cog(Reload(bot))
+    await bot.add_cog(ReloadCog(bot))

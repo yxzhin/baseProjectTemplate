@@ -6,7 +6,7 @@ from discord.ext.commands import Cog
 from .. import TheBot
 
 
-class ApiTest(Cog):
+class ApiTestCog(Cog):
     """
     Ког для тестирования взаимодействия с FastAPI приложением.
     Использует фабрику APIClient для создания Httpx или Aiohttp клиента.
@@ -35,4 +35,4 @@ class ApiTest(Cog):
 
 
 async def setup(bot: TheBot):
-    await bot.add_cog(ApiTest(bot))
+    await bot.add_cog(ApiTestCog(bot))

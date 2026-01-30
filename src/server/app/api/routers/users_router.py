@@ -17,14 +17,24 @@ users_router = APIRouter(
 async def get_user_by_discord_id(
     discord_id: int,
     user_service: FromDishka[UserService],
+    response: Response,
 ):
     """Получает пользователя по его Discord ID."""
     user = await user_service.get_user_by_discord_id(discord_id=discord_id)
 
     if not user:
-        raise HTTPException(status_code=404, detail="user not found")
+        response.status_code = 404
+        return {
+            "success": False,
+            "message": "user not found",
+            "user": None,
+        }
 
-    return user
+    return {
+        "success": True,
+        "message": "successfully retrieved user data",
+        "user": user,
+    }
 
 
 @users_router.get("/username/{username}", response_model=UserOutResponse)
@@ -32,14 +42,24 @@ async def get_user_by_discord_id(
 async def get_user_by_username(
     username: str,
     user_service: FromDishka[UserService],
+    response: Response,
 ):
     """Получает пользователя по его имени пользователя."""
     user = await user_service.get_user_by_username(username=username)
 
     if not user:
-        raise HTTPException(status_code=404, detail="user not found")
+        response.status_code = 404
+        return {
+            "success": False,
+            "message": "user not found",
+            "user": None,
+        }
 
-    return user
+    return {
+        "success": True,
+        "message": "successfully retrieved user data",
+        "user": user,
+    }
 
 
 @users_router.get("/", response_model=UsersOutResponse)
@@ -61,7 +81,12 @@ async def get_users(
         limit = 10
 
     users = await user_service.get_users(page=page, limit=limit)
-    return {"users": users, "total": len(users)}
+    return {
+        "success": True,
+        "message": "successfully retrieved users",
+        "users": users,
+        "total": len(users),
+    }
 
 
 @users_router.post("/add", response_model=UserOutResponse)
@@ -80,4 +105,8 @@ async def add_user(
 
     new_user = await user_service.create_user(user=user)
     response.status_code = status.HTTP_201_CREATED
-    return new_user
+    return {
+        "success": True,
+        "message": "user created successfully",
+        "user": new_user,
+    }

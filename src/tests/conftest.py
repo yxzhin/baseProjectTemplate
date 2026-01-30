@@ -62,27 +62,38 @@ async def db_session(test_engine: AsyncEngine) -> AsyncGenerator[AsyncSession, A
         await transaction.rollback()
 
 
-@pytest.fixture(scope="function")
-async def container(db_session: AsyncSession) -> AsyncGenerator[AsyncContainer, Any]:
-    """Создаёт асинхронный контейнер Dishka для внедрения зависимостей в приложение."""
-    container = make_async_container(
+@pytest.fixture
+async def app_container(
+    db_session: AsyncSession,
+) -> AsyncGenerator[AsyncContainer, Any]:
+    app_container = make_async_container(
         TestDatabaseProvider(session=db_session),
         RepositoryProvider(),
         ServiceProvider(),
     )
+    yield app_container
+    await app_container.close()
+
+
+@pytest.fixture
+async def bot_container(api_client_factory) -> AsyncGenerator[AsyncContainer, Any]:
+    from src.bot.app.di import create_bot_container
+
+    container = create_bot_container(api_client_factory=api_client_factory)
+
     yield container
     await container.close()
 
 
 @pytest.fixture
-def app(container: AsyncContainer) -> FastAPI:
+def app(app_container: AsyncContainer) -> FastAPI:
     """Создает FastAPI приложение для тестирования."""
     app = FastAPI()
     app.include_router(test_router)
     app.include_router(users_router)
     app.include_router(database_router)
 
-    setup_dishka(container=container, app=app)
+    setup_dishka(container=app_container, app=app)
     return app
 
 
@@ -128,7 +139,10 @@ def create_user(httpx_client: AsyncClient) -> Callable[[int, str, str | None], A
         response = await httpx_client.post("/users/add", json=payload)
         assert response.status_code == 201, response.text
 
-        return response.json()
+        json = response.json()
+        assert json["success"] is True
+
+        return json["user"]
 
     return _create_user
 

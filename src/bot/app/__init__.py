@@ -7,6 +7,7 @@ from discord.ext.commands import Bot
 
 from ...shared import StructuredLogger
 from .conf import Config
+from .di import create_bot_container
 from .http import APIClient
 from .utils import Helpers
 
@@ -17,7 +18,7 @@ class TheBot(Bot):
     Настраивает префикс команд, интенты, обработку ошибок и загрузку когов.
     """
 
-    def __init__(self, api_client_factory=APIClient):
+    def __init__(self, api_client_factory: type[APIClient] = APIClient):
         intents = Intents.default()
         intents.message_content = True
 
@@ -30,9 +31,10 @@ class TheBot(Bot):
         )
 
         self.api_client_factory = api_client_factory
+        self.container = create_bot_container(api_client_factory=api_client_factory)
 
-        self.tree.interaction_check = self._interaction_check
-        self.tree.on_error = self._on_tree_error
+        self.tree.interaction_check = self._interaction_check  # type: ignore
+        self.tree.on_error = self._on_tree_error  # type: ignore
 
     async def setup_hook(self):
         """

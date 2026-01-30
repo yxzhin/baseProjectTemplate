@@ -26,4 +26,8 @@ async def test(
     """
     query = select(func.count()).select_from(User)
     users_count = await session.scalar(query)
-    return {"message": "it works!! :tada:", "users_count": users_count}
+    return {
+        "success": True,
+        "message": "it works!! :tada:",
+        "users_count": users_count,
+    }

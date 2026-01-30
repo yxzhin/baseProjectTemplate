@@ -1,8 +1,7 @@
-from pydantic import BaseModel
+from . import BaseResponse
 
 
-class TestResponse(BaseModel):
+class TestResponse(BaseResponse):
     """Модель выходных данных для тестового ответа."""
 
-    message: str
     users_count: int
