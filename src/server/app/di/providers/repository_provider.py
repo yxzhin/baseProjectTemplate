@@ -1,7 +1,7 @@
 from dishka import Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..repositories import UserRepository
+from ...repositories import UserRepository
 
 
 class RepositoryProvider(Provider):

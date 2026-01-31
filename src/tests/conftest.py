@@ -19,7 +19,11 @@ from src.bot.app import TheBot, create_bot
 from src.bot.app.http import APIClient, HttpxTestsClient
 from src.server.app.api.routers import *
 from src.server.app.db import Base
-from src.server.app.di import RepositoryProvider, ServiceProvider, TestDatabaseProvider
+from src.server.app.di.providers import (
+    RepositoryProvider,
+    ServiceProvider,
+    TestDatabaseProvider,
+)
 
 
 @pytest.fixture

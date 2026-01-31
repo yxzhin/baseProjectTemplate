@@ -1,7 +1,7 @@
 from dishka import Provider, Scope, provide
 
-from ..repositories import UserRepository
-from ..services import UserService
+from ...repositories import UserRepository
+from ...services import UserService
 
 
 class ServiceProvider(Provider):

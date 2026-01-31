@@ -4,7 +4,7 @@ from typing import Any
 
 from ....shared import StructuredLogger
 from ..db import Database
-from ..services import RedisService
+from .redis import RedisService
 
 
 @asynccontextmanager
