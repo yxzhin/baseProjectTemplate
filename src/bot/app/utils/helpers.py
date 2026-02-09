@@ -11,6 +11,6 @@ class Helpers:
         abs_cog_path = f"{abs_cogs_path}/{file}"
         working_dir = getcwd()
         rel_path = relpath(abs_cog_path, working_dir)
-        ext_path = rel_path.replace("\\", ".")[:-3]
+        ext_path = rel_path.replace("\\", ".").replace("/", ".")[:-3]
 
         return ext_path

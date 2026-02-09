@@ -5,7 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from .api import api_router
 from .conf import Config
-from .di import DatabaseProvider, RepositoryProvider, ServiceProvider
+from .di.providers import DatabaseProvider, RepositoryProvider, ServiceProvider
 from .utils import TraceIDMiddleware, lifespan
 
 app = FastAPI(
